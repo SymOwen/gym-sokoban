@@ -26,7 +26,7 @@ n_rounds = args.rounds
 n_steps = args.steps
 save_images = args.save or args.gifs
 generate_gifs = args.gifs
-render_mode = args.render_mode
+render_mode = args.rendr_mode
 observation_mode = 'tiny_rgb_array' if 'tiny' in render_mode else 'rgb_array'
 scale_image = 16
 
@@ -78,7 +78,7 @@ for i_episode in range(n_rounds):
             print_available_actions()
             continue
 
-        observation, reward, done, info = env.step(action, observation_mode=observation_mode)
+        observation, reward, done, info = env.step(action)
         print(ACTION_LOOKUP[action], reward, done, info)
         print(len(observation), len(observation[0]), len(observation[0][0]))
         if save_images:
