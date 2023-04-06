@@ -8,6 +8,7 @@ import numpy as np
 
 
 class SokobanEnv(gym.Env):
+    map = None
     metadata = {
         'render.modes': ['human', 'rgb_array', 'tiny_human', 'tiny_rgb_array', 'raw'],
         'render_modes': ['human', 'rgb_array', 'tiny_human', 'tiny_rgb_array', 'raw']
@@ -18,7 +19,10 @@ class SokobanEnv(gym.Env):
                  max_steps=120,
                  num_boxes=4,
                  num_gen_steps=None,
-                 reset=True):
+                 reset=True,
+                 map=None):
+        self.map = map
+        print("map: ", map)
 
         # General Configuration
         self.dim_room = dim_room
@@ -142,6 +146,7 @@ class SokobanEnv(gym.Env):
         change = CHANGE_COORDINATES[(action - 1) % 4]
         new_position = self.player_position + change
         current_position = self.player_position.copy()
+        print("I modify some code here")
 
         # Move player if the field in the moving direction is either
         # an empty field or an empty box target.
@@ -200,17 +205,20 @@ class SokobanEnv(gym.Env):
         return (self.max_steps == self.num_env_steps)
 
     def reset(self, second_player=False, render_mode='rgb_array'):
-        try:
-            self.room_fixed, self.room_state, self.box_mapping = generate_room(
-                dim=self.dim_room,
-                num_steps=self.num_gen_steps,
-                num_boxes=self.num_boxes,
-                second_player=second_player
-            )
-        except (RuntimeError, RuntimeWarning) as e:
-            print("[SOKOBAN] Runtime Error/Warning: {}".format(e))
-            print("[SOKOBAN] Retry . . .")
-            return self.reset(second_player=second_player, render_mode=render_mode)
+        if self.map is not None:
+            self.room_fixed, self.room_state, self.box_mapping = self.map['room_structure'], self.map['room_state'], self.map['box_mapping']
+        else:
+            try:
+                self.room_fixed, self.room_state, self.box_mapping = generate_room(
+                    dim=self.dim_room,
+                    num_steps=self.num_gen_steps,
+                    num_boxes=self.num_boxes,
+                    second_player=second_player
+                )
+            except (RuntimeError, RuntimeWarning) as e:
+                print("[SOKOBAN] Runtime Error/Warning: {}".format(e))
+                print("[SOKOBAN] Retry . . .")
+                return self.reset(second_player=second_player, render_mode=render_mode)
 
         self.player_position = np.argwhere(self.room_state == 5)[0]
         self.num_env_steps = 0
@@ -279,6 +287,11 @@ ACTION_LOOKUP = {
     6: 'move down',
     7: 'move left',
     8: 'move right',
+    # 'hold': 'no operation',
+    # 'up': 'push up',
+    # 'down': 'move down',
+    # 'left': 'move left',
+    # 'right': 'move right',
 }
 
 # Moves are mapped to coordinate changes as follows

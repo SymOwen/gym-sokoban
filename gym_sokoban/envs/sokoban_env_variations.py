@@ -14,6 +14,7 @@ class SokobanEnv1(SokobanEnv):
     def __init__(self, **kwargs):
         kwargs['num_boxes'] = kwargs.get('num_boxes', 3)
         kwargs['max_steps'] = kwargs.get('max_steps', 200)
+        kwargs['map'] = kwargs.get('map', None)
         super(SokobanEnv1, self).__init__(**kwargs)
 
 

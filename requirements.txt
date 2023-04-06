@@ -1,0 +1,6 @@
+gym==0.21.0
+numpy==1.24.2
+tqdm==4.63.0
+imageio==2.22.0
+requests==2.27.1
+pyglet==2.0.4

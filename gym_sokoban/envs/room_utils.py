@@ -44,6 +44,9 @@ def generate_room(dim=(13, 13), p_change_directions=0.35, num_steps=25, num_boxe
     if score == 0:
         raise RuntimeWarning('Generated Model with score == 0')
 
+    print('room structure: ', room_structure)
+    print('room state: ', room_state)
+    print('box mapping: ', box_mapping)
     return room_structure, room_state, box_mapping
 
 
@@ -350,3 +353,18 @@ CHANGE_COORDINATES = {
     2: (0, -1),
     3: (0, 1)
 }
+
+
+def generate_room_from_map(map):
+    """
+    Generates a Sokoban room, represented by an integer matrix. The elements are encoded as follows:
+    wall = 0
+    empty space = 1
+    box target = 2
+    box not on target = 3
+    box on target = 4
+    player = 5
+
+    :param the numpy array to be converted
+    """
+    
